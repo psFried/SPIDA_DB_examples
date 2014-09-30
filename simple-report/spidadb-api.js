@@ -10,33 +10,43 @@ var client = new RestClient();
 
 client.registerMethod("listProjects", spidadbUrl + "/projects.referenced?apiToken="+ apiToken +"&skip=0&limit=100", "GET");
 
+client.registerMethod("listLocations", spidadbUrl + "/locations.referenced?apiToken=" + apiToken + "&skip=0&limit=100", "GET");
 
-var listAllProjects = function(offset, collector, callback){
+var listAll = function(type, offset, collector, callback){
+    var method = (type === "projects")? "listProjects" : "listLocations";
+    client.methods[method]({skip: offset}, function(data, response){
+        if (data.status !== "ok"){
+            console.log("Response indicated error");
+            console.log(response);
+            return;
+        }
 
-	client.methods.listProjects({skip: offset}, function(data, response){
-		if (data.status !== "ok"){
-			console.log("Response indicated error");
-			console.log(response);
-			return;
-		}
+        console.log("SPIDA DB returned $i projects", data[type].length);
 
-		console.log("SPIDA DB returned $i projects", data.projects.length);
+        var newCollector = collector.concat(data[type]);
+        if (data[type].length === 100){
+            console.log("recursively calling listAllProjects with collector of length: " + newCollector.length);
+            listAll(type, offset + 100, newCollector, callback);
 
-		var newCollector = collector.concat(data.projects);
-		if (data.projects.length === 100){
-			console.log("recursively calling listAllProjects with collector of length: " + newCollector.length);
-			listProjects(offset + 100, newCollector, callback);
+        } else {
+            console.log("retrieved all projects");
+            callback(newCollector);
+            console.log("finished callback");
+        }
+    })
+};
 
-		} else {
-			console.log("retrieved all projects");
-			callback(newCollector);
-			console.log("finished callback");
-		}
-	});
-}
+var listAllProjects = function(callback){
+    return listAll("projects", 0, [], callback);
+};
+
+var listAllLocations = function(callback){
+    return listAll("locations", 0, [], callback);
+};
 
 module.exports = {
-	"listAllProjects": listAllProjects
+	"listAllProjects": listAllProjects,
+    "listAllLocations": listAllLocations
 };
 
 

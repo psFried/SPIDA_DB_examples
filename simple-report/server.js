@@ -1,6 +1,7 @@
 var expressjs = require("express");
 var expHandlebars = require("express-handlebars");
 var poleCounts = require("./poleCountReport");
+var qcReport = require("./qcLocationReport");
 
 var app = expressjs();
 
@@ -9,13 +10,19 @@ app.set('view engine', 'handlebars');
 
 app.use(expressjs.static(__dirname + '/public'));
 
-app.get('/report', function(req, res){
+app.get('/poleCounts', function(req, res){
 	console.log("starting report");
 	poleCounts.generatePoleCounts(function(data){
 		console.log("finished generating report");
 		res.render("poleCounts", data);
 	});
 	
+});
+
+app.get("/qcReport", function(req, res){
+    qcReport.generateReport(function(data){
+        res.render("qcReport", data);
+    });
 });
 
 app.get('/', function (req, res) {

@@ -31,7 +31,7 @@ var getPoleCountByUser = function(projects){
 };
 
 var generatePoleCountReport = function(renderFunction){
-	api.listAllProjects(0, [], function(projects){
+	api.listAllProjects(function(projects){
 		var data = {};
 		data.title = "Pole Counts by User";
 		data.poleCountsByUser = getPoleCountByUser(projects);

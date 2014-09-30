@@ -1,0 +1,15 @@
+<h1>Differences by user and type</h1>
+
+{{#data}}
+	<h3>{{name}}</h3>
+	<p>OK Poles: {{okLocations}}, Problem Poles: {{problemLocations}}</p>
+	<table>
+		{{#diffCounts}}
+			<tr>
+				<td>{{type}}</td>
+				<td>{{count}}</td>
+			</tr>
+		{{/diffCounts}}
+	</table>
+	<br>
+{{/data}}
