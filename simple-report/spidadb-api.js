@@ -10,6 +10,7 @@ var client = new RestClient();
 
 client.registerMethod("listProjects", spidadbUrl + "/projects.referenced?apiToken="+ apiToken +"&skip=0&limit=100", "GET");
 
+
 var listAllProjects = function(offset, collector, callback){
 
 	client.methods.listProjects({skip: offset}, function(data, response){

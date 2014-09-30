@@ -1,6 +1,17 @@
 var api = require('./spidadb-api');
 
-var getDataFromProjects = function(projects){
+var convertToArray = function(dataObj){
+	var dataArray = [];
+	for (var key in dataObj){
+		if (dataObj.hasOwnProperty(key)){
+			var obj = {name: key, count: dataObj[key]};
+			dataArray.push(obj);
+		}
+	}
+	return dataArray;
+}
+
+var getPoleCountByUser = function(projects){
 	var counts = {};
 	for (var i = 0; i < projects.length; i++){
 		var proj = projects[i];
@@ -16,26 +27,20 @@ var getDataFromProjects = function(projects){
 		}
 	}
 
-	return counts;
+	return convertToArray(counts);
 }
 
-var convertToArray = function(dataObj){
-	var dataArray = [];
-	for (var key in dataObj){
-		if (dataObj.hasOwnProperty(key)){
-			var obj = {name: key, count: dataObj[key]};
-			dataArray.push(obj);
-		}
-	}
-	return dataArray;
-}
+
 
 var generateReport = function(renderFunction){
 	api.listAllProjects(0, [], function(projects){
-		var data = getDataFromProjects(projects);
+		var data = {};
+		data.title = "Example SPIDADB Report"
+		data.poleCountsByUser = getPoleCountByUser(projects);
+
 		console.log("Data returned from generator:");
 		console.log(data);
-		renderFunction({"data": convertToArray(data)});
+		renderFunction(data);
 	});
 }
 
