@@ -9,7 +9,7 @@ var convertToArray = function(dataObj){
 		}
 	}
 	return dataArray;
-}
+};
 
 var getPoleCountByUser = function(projects){
 	var counts = {};
@@ -28,23 +28,23 @@ var getPoleCountByUser = function(projects){
 	}
 
 	return convertToArray(counts);
-}
+};
 
-
-
-var generateReport = function(renderFunction){
+var generatePoleCountReport = function(renderFunction){
 	api.listAllProjects(0, [], function(projects){
 		var data = {};
-		data.title = "Example SPIDADB Report"
+		data.title = "Pole Counts by User";
 		data.poleCountsByUser = getPoleCountByUser(projects);
 
 		console.log("Data returned from generator:");
 		console.log(data);
 		renderFunction(data);
 	});
-}
+};
+
+
 
 
 module.exports = {
-	generate: generateReport
-}
+	generatePoleCounts: generatePoleCountReport
+};

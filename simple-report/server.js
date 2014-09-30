@@ -1,6 +1,6 @@
 var expressjs = require("express");
 var expHandlebars = require("express-handlebars");
-var reportGenerator = require("./reportGenerator");
+var poleCounts = require("./poleCountReport");
 
 var app = expressjs();
 
@@ -11,9 +11,9 @@ app.use(expressjs.static(__dirname + '/public'));
 
 app.get('/report', function(req, res){
 	console.log("starting report");
-	reportGenerator.generate(function(data){
+	poleCounts.generatePoleCounts(function(data){
 		console.log("finished generating report");
-		res.render("report", data);
+		res.render("poleCounts", data);
 	});
 	
 });
