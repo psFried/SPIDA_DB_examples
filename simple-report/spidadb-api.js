@@ -12,41 +12,50 @@ client.registerMethod("listProjects", spidadbUrl + "/projects.referenced?apiToke
 
 client.registerMethod("listLocations", spidadbUrl + "/locations.referenced?apiToken=" + apiToken + "&skip=0&limit=100", "GET");
 
-var listAll = function(type, offset, collector, callback){
+/**
+ * requests 100 items from spidadb, then calls the callback with the results
+ *
+ * @param type one of 'projects' or 'locations'
+ * @param offset to paginate results
+ * @param callback calls this function with the results
+ */
+var listAll = function(type, offset, callback){
     var method = (type === "projects")? "listProjects" : "listLocations";
     client.methods[method]({skip: offset}, function(data, response){
         if (data.status !== "ok"){
             console.log("Response indicated error");
             console.log(response);
-            return;
+            throw data.error;
         }
+        console.log("SPIDA DB returned %i projects", data[type].length);
 
-        console.log("SPIDA DB returned $i projects", data[type].length);
+        callback(data[type]);
+        console.log("finished callback");
 
-        var newCollector = collector.concat(data[type]);
-        if (data[type].length === 100){
-            console.log("recursively calling listAllProjects with collector of length: " + newCollector.length);
-            listAll(type, offset + 100, newCollector, callback);
-
-        } else {
-            console.log("retrieved all projects");
-            callback(newCollector);
-            console.log("finished callback");
-        }
     })
 };
 
-var listAllProjects = function(callback){
-    return listAll("projects", 0, [], callback);
+/**
+ * requests 100 projects from spidadb then calls the callback function with the results
+ *
+ * @param callback will be passed an array of referenced projects
+ */
+var listProjects = function(callback){
+    return listAll("projects", 0, callback);
 };
 
-var listAllLocations = function(callback){
-    return listAll("locations", 0, [], callback);
+/**
+ * requests 100 locations from spidadb then calls the callback function with the results
+ *
+ * @param callback will be passed an array of referenced locations
+ */
+var listLocations = function(callback){
+    return listAll("locations", 0, callback);
 };
 
 module.exports = {
-	"listAllProjects": listAllProjects,
-    "listAllLocations": listAllLocations
+	"listProjects": listProjects,
+    "listLocations": listLocations
 };
 
 

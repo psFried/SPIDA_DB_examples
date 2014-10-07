@@ -11,11 +11,28 @@ var convertToArray = function(dataObj){
 	return dataArray;
 };
 
+/**
+ * returns an array of objects containing username and pole count. The following format is used:
+ * [
+ *   {
+ *     "name": <username>,
+ *     "count": <poleCount>
+ *   },
+ *   ...
+ * ]
+ *
+ * @param projects an array of spidadb referenced projects.
+ */
 var getPoleCountByUser = function(projects){
 	var counts = {};
 	for (var i = 0; i < projects.length; i++){
 		var proj = projects[i];
-		var usr = proj.user.email;
+
+		var usr = 'default user';
+        if (proj.hasOwnProperty('user') && proj.user.hasOwnProperty('email')){
+            usr = proj.user.email;
+        }
+
 		console.log("updating counts for project %s by user: %s", proj.calcProject.label, usr);
 		if (typeof counts[usr] === 'undefined'){
 			counts[usr] = 0;
@@ -30,8 +47,15 @@ var getPoleCountByUser = function(projects){
 	return convertToArray(counts);
 };
 
+/**
+ * creates an object with two properties:
+ * "title": the title of the report
+ * "poleCountsByUser": an array of objects, each having a 'name' and a 'count' property.
+ *
+ * @param renderFunction callback that get's passed the object that was created
+ */
 var generatePoleCountReport = function(renderFunction){
-	api.listAllProjects(function(projects){
+	api.listProjects(function(projects){
 		var data = {};
 		data.title = "Pole Counts by User";
 		data.poleCountsByUser = getPoleCountByUser(projects);

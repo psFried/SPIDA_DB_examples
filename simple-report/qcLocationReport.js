@@ -40,11 +40,28 @@ var createUsrDataObj = function(usr){
     };
 };
 
+/**
+ * creates an array of objects that each have the following properties:
+ * "name": the email of the user who last updated the project
+ * "counts": [
+ *   {
+ *     "type": <difference type>,
+ *     "count": <number of differences of that type>
+ *   },
+ *   ...
+ * ]
+ *
+ * @param locations an array of spidadb locations in referenced format
+ * @returns {{data: Array}}
+ */
 var getDifferencesByUserAndType = function(locations){
     var data = [];
 
     locations.forEach(function(location){
-        var usr = location.user.email;
+        var usr = "default user";
+        if (location.hasOwnProperty('user') && location.user.hasOwnProperty('email')){
+            usr = location.user.email;
+        }
         var usrData = _.find(data, function(obj){
             return obj.name === usr;
         });
@@ -67,7 +84,7 @@ var getDifferencesByUserAndType = function(locations){
 
 
 var getReportData = function(renderFun){
-    api.listAllLocations(function(locations){
+    api.listLocations(function(locations){
         var data = getDifferencesByUserAndType(locations);
         console.log("finished generating data, rendering results");
         renderFun(data);
