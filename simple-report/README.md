@@ -15,7 +15,7 @@ This is a simple example app that generates a report using data from the SPIDA D
 ### Notes
 
 - The app will download every project in spidadb and create a table showing each user email and how many poles they have in SPIDA DB
-- This is obviously *very* simplistic. For a production environment, we would obviously want to persist required data and only query for what we need. 
-- SPIDA DB always returns results ordered by dateModified, with the most recent first. This make a 'pole and update' pretty easy for generating reports.
+- This is obviously *very* simplistic. For a production environment, we would definitely want to persist required data and only query for what we need. 
+- SPIDA DB always returns results ordered by dateModified, with the most recent first. This make a 'poll and update' pretty easy for generating reports.
 
 
